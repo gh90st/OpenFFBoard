@@ -6,6 +6,7 @@
  */
 
 #include "TMC4671.h"
+#ifdef TMC4671DRIVER
 #include "ledEffects.h"
 #include "voltagesense.h"
 #include "stm32f4xx_hal_spi.h"
@@ -2882,3 +2883,4 @@ void TMC4671::errorCallback(const Error &error, bool cleared){
 		this->changeState(TMC_ControlState::HardError, true);
 	}
 }
+#endif
