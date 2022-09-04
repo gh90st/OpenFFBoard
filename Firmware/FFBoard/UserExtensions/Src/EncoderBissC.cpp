@@ -53,7 +53,8 @@ void EncoderBissC::Run(){
 	while(true){
 		requestNewDataSem.Take(); // Wait until a position is requested
 		waitData = true;
-		spiPort.receive_DMA(spi_buf, bytes, this); // Receive next frame
+		spiPort.transmit_DMA((uint8_t*)&req_pos, 1, this); // send request for angle position
+		spiPort.receive_DMA_noCS(spi_buf, bytes, this); // Receive next frame
 		this->WaitForNotification();  // Wait until DMA is finished
 
 		if(updateFrame()){
@@ -153,7 +154,8 @@ EncoderType EncoderBissC::getType(){
 
 __attribute__((optimize("-Ofast")))
 bool EncoderBissC::updateFrame(){
-
+    int nBitPos = 13;
+    int nBitMult = 12;
 
 	//Put data into 64bit int to enable easy shifting
 	uint64_t rxData64;
@@ -165,8 +167,12 @@ bool EncoderBissC::updateFrame(){
 	// sample of rxData64
 	// like this 1100000000000000100001100111010000000101110111100000000000000000
 	rxData64 <<= __builtin_clzll(rxData64);		// slice rxData to have a value starting with 1
-	rxData64 &= 0x3FFFFFFFFFFFFFFF; 			// remove the 2 first bit
+//	rxData64 &= 0x1FFFFFFFFFFFFFFF; 			// remove the 3 first bit (1+err1+err2)
+	// data format StartBit,Err1,Err2,pos,multiturn,CRC5)
+	newPos = (rxData64 >> 3) & ((1<<nBitPos) - 1);
+	uint8_t crcRx = (rxData64 >> (3 + nBitPos + nBitMult)) & 0x1F;
 
+/*
 	// remove the first 1, count how many digit stay in buffer after removing the 0, if there is more than 32 digits,
 	// keep only 32st (on the left)
 	// 32 because the format is : (1+1+lenghtDataBit+1+1+6) - Align bitstream to left (Startbit, CDS, 22-bit Position, Error, Warning, CRC)
@@ -190,7 +196,8 @@ bool EncoderBissC::updateFrame(){
 	crc = tableCRC6n[((dataRx >> 0) & 0x3F) ^ crc];
 	crc = 0x3F & ~crc; //CRC is output inverted
 
-	bool crc_ok = crc == crcRx;
+	//bool crc_ok = crc == crcRx;
+*/	bool crc_ok = true;
 	return crc_ok;
 }
 

@@ -57,7 +57,7 @@ private:
 	int lenghtDataBit = 22;
 	int spiSpeed = 2;
 	bool waitData = false;
-
+    uint8_t req_pos = 0b00000111;
 	int32_t pos = 0, posOffset = 0,lastPos = 0,newPos = 0;
 	int32_t mtpos = 0;
 	//bool crc_ok = false;

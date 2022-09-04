@@ -127,6 +127,19 @@ void SPIPort::receive_DMA(uint8_t* buf,uint16_t size,SPIDevice* device){
 	HAL_SPI_Receive_DMA(&this->hspi,buf,size);
 	// Request completes in rx complete callback
 }
+/**
+ * Receives using DMA without toggling CS pin. Not recommended
+ * Warning: DMA depends on interrupts not being missed
+ */
+void SPIPort::receive_DMA_noCS(uint8_t* buf,uint16_t size,SPIDevice* device){
+	//device->beginSpiTransfer(this);
+	if(!takenExclusive && this->allowReconfigure){
+		this->configurePort(&device->getSpiConfig()->peripheral);
+	}
+	current_device = device;
+	HAL_SPI_Receive_DMA(&this->hspi,buf,size);
+	// Request completes in rx complete callback
+}
 
 
 void SPIPort::transmit_IT(const uint8_t* buf,uint16_t size,SPIDevice* device){

@@ -47,6 +47,7 @@
 #define ODRIVE
 #define VESC
 #define MTENCODERSPI // requires SPI3
+#define BISSENCODER // requires SPI3
 #define CANBUTTONS // Requires CAN
 #define CANANALOG // Requires CAN
 #define ADS111XANALOG // Requires I2C

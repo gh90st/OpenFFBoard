@@ -62,6 +62,7 @@ public:
 	void transmit_DMA(const uint8_t* buf,uint16_t size,SPIDevice* device);
 	void transmitReceive_DMA(const uint8_t* txbuf,uint8_t* rxbuf,uint16_t size,SPIDevice* device);
 	void receive_DMA(uint8_t* buf,uint16_t size,SPIDevice* device);
+	void receive_DMA_noCS(uint8_t* buf,uint16_t size,SPIDevice* device);
 	void transmit_IT(const uint8_t* buf,uint16_t size,SPIDevice* device);
 	void transmitReceive_IT(const uint8_t* txbuf,uint8_t* rxbuf,uint16_t size,SPIDevice* device);
 	void receive_IT(uint8_t* buf,uint16_t size,SPIDevice* device);
